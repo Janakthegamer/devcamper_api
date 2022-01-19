@@ -15,6 +15,9 @@ const bootcamps = require("./routes/bootcamps");
 
 const app = express();
 
+// Body parser
+app.use(express.json());
+
 // Dev logging midddleware
 if (process.env.NODE_ENV === "development") {
     app.use(morgan("dev"));
@@ -27,12 +30,12 @@ const PORT = process.env.PORT || 5000;
 
 const server = app.listen(
     PORT,
-    console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow.bold)
+    console.log("[Server] Running in ".yellow + `${process.env.NODE_ENV}`.green.bold+" mode on port ".yellow + `${PORT}`.green.bold)
 );
 
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (err, promise) => {
-    console.log(`Error: ${err.message}`.red);
+    console.log("[Error] ".red+`${err.message}`);
     // Close server & exit process
     server.close(() => process.exit(1));
 })
