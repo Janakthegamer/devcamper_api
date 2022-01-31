@@ -25,6 +25,7 @@ dotenv.config({ path: "./config/config.env" });
 // load models
 const Bootcamp = require("./models/Bootcamp");
 const Course = require("./models/Course");
+const User = require("./models/User");
 
 // Connect to DB
 mongoose.connect(process.env.MONGO_URI, {
@@ -35,12 +36,13 @@ mongoose.connect(process.env.MONGO_URI, {
 // Read JSON files
 const bootcamps = JSON.parse(fs.readFileSync(`${__dirname}/_data/bootcamps.json`, "utf-8"))
 const courses = JSON.parse(fs.readFileSync(`${__dirname}/_data/courses.json`, "utf-8"))
+const users = JSON.parse(fs.readFileSync(`${__dirname}/_data/users.json`, "utf-8"))
 
 
 // Import into DB
-const importData = async (package, name, type) => {
+const importData = async (model, name, type) => {
     try {
-        await package.create(type);
+        await model.create(type);
 
         console.log(`${name} Data Imported...`.green.inverse);
         process.exit();
@@ -50,9 +52,9 @@ const importData = async (package, name, type) => {
 }
 
 // Delete data
-const deleteData = async (package, name) => {
+const deleteData = async (model, name) => {
     try {
-        await package.deleteMany();
+        await model.deleteMany();
 
         console.log(`${name} Data Destroyed...`.red.inverse);
         process.exit();
@@ -75,13 +77,13 @@ if (process.argv[2] === "-i" && process.argv[3] === "course") {
     importData(Bootcamp, "Bootcamp", bootcamps);
 } else if (process.argv[2] === "-d" && process.argv[3] === "bootcamp") {
     deleteData(Bootcamp, "Bootcamp");
-} else if (process.argv[2] === "-i" && process.argv[3] === "reviews") {
+} else if (process.argv[2] === "-i" && process.argv[3] === "user") {
+    importData(User, "User", users);
+} else if (process.argv[2] === "-d" && process.argv[3] === "user") {
+    deleteData(User, "User", users);
+} else if (process.argv[2] === "-i" && process.argv[3] === "review") {
     showError();
-} else if (process.argv[2] === "-d" && process.argv[3] === "reviews") {
-    showError();
-} else if (process.argv[2] === "-i" && process.argv[3] === "users") {
-    showError();
-} else if (process.argv[2] === "-d" && process.argv[3] === "users") {
+} else if (process.argv[2] === "-d" && process.argv[3] === "review") {
     showError();
 } else {
     showError();
